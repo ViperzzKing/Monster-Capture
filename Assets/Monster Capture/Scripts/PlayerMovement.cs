@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     Vector2 input;
     Rigidbody rb;
 
-
+    
     
     //-------------------------------------------------------------------\\
 
