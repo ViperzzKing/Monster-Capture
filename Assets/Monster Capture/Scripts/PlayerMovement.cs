@@ -5,13 +5,14 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float jumpSpeed = 450f;
-    [SerializeField] private float moveSpeed = 50f;
+    [SerializeField] private float moveSpeed = 5f;
 
     private bool isGrounded;
 
     Vector2 input;
-    Rigidbody rb;
 
+    Rigidbody rb;
+    public Camera cam;
     
     
     //-------------------------------------------------------------------\\
@@ -20,6 +21,17 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+
+
+        if(cam == null)
+        {
+            cam = Camera.main;
+        }
+
+        if(cam == null)
+        {
+            cam = FindFirstObjectByType<Camera>();
+        }
     }
 
     private void OnJump()
@@ -41,7 +53,12 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Vector3 movement3D = new Vector3(input.x, 0f, input.y);
-        rb.MovePosition(rb.position + movement3D * moveSpeed * Time.fixedDeltaTime);
+
+        movement3D = cam.transform.TransformDirection(movement3D);
+        movement3D.y = 0f;
+        movement3D = movement3D.normalized * movement3D.magnitude;
+
+        rb.AddForce(movement3D * moveSpeed * 50 * Time.fixedDeltaTime, ForceMode.VelocityChange);
     }
 
     private void OnCollisionStay(Collision collision)
